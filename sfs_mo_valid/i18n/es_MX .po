@@ -1,0 +1,35 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* sfs_mo_valid
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1-20120808-233336\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-07-08 10:04+0000\n"
+"PO-Revision-Date: 2014-07-08 10:04+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: sfs_mo_valid
+#: code:addons/sfs_mo_valid/wizard/mrp.py:56
+#: code:addons/sfs_mo_valid/wizard/stock_move_consume.py:54
+#, python-format
+msgid "Warning ! you cant validate the manufacture order,            there are raw materials missing in warehouse.!"
+msgstr "Warning ! no se puede validar la orden de produccion hay materias primas insuficientes en el almacen.!"
+
+#. module: sfs_mo_valid
+#: model:ir.model,name:sfs_mo_valid.model_mrp_product_produce
+msgid "Product Produce"
+msgstr "Producir producto"
+
+#. module: sfs_mo_valid
+#: code:addons/sfs_mo_valid/wizard/mrp.py:52
+#, python-format
+msgid "%s has %s stock and you need %s"
+msgstr "%s tiene %s y usted necesita %s"
+

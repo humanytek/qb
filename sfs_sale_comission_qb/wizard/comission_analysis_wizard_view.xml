@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <record id="comission_analysis_wizard_view" model="ir.ui.view">
+            <field name="name">comission.analysis.wizard.view</field>
+            <field name="model">comission.analysis.wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Comission Analysis">
+                    <separator string="Periods"/>
+                    <group colspan="4" col="2">
+                        <field name="start_period_id" required="1" domain="[('state', '=', 'draft')]"/>
+                        <field name="end_period_id" required="1" domain="[('state', '=', 'draft')]"/>
+                        <field name="with_currency"/>
+                    </group>
+                    <separator string="Journals" colspan="4"/>
+                    <field name="journal_ids" colspan="4" nolabel="1" required="1"/>
+                    <group colspan="4" col="2">
+                        <button special="cancel" string="Cancel" icon="gtk-cancel"/>
+                        <button name="open_report" type="object" string="Open" icon="STOCK_PRINT_PREVIEW"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="action_comission_analysis_wizard">
+            <field name="name">Comission Analysis</field>
+            <field name="res_model">comission.analysis.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+        
+        <record id="action_analysis_wizard_link" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="comission_analysis_wizard_view"/>
+            <field name="act_window_id" ref="action_comission_analysis_wizard"/>
+        </record>
+        
+        <record id="comission_report_wizard_view" model="ir.ui.view">
+            <field name="name">comission.report.wizard.view</field>
+            <field name="model">comission.analysis.wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Comission Report">
+                    <separator string="Periods"/>
+                    <group colspan="4" col="2">
+                        <field name="start_period_id" required="1" domain="[('state', '=', 'draft')]"/>
+                        <field name="end_period_id" required="1" domain="[('state', '=', 'draft')]"/>
+                        <field name="with_currency"/>
+                    </group>
+                    <separator string="Journals" colspan="4"/>
+                    <field name="journal_ids" colspan="4" nolabel="1" required="1"/>
+                    <group colspan="4" col="2">
+                        <button special="cancel" string="Cancel" icon="gtk-cancel"/>
+                        <button name="print_report" type="object" string="Print" icon="STOCK_PRINT"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="action_comission_report_wizard">
+            <field name="name">Comission Report</field>
+            <field name="res_model">comission.analysis.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+        
+        <record id="action_report_wizard_link" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="comission_report_wizard_view"/>
+            <field name="act_window_id" ref="action_comission_report_wizard"/>
+        </record>
+        
+        <menuitem action="action_comission_analysis_wizard" id="menu_comission_analysis" name="Comission Analysis" parent="account.menu_finance_generic_reporting" sequence="2"/>
+        <menuitem action="action_comission_report_wizard" id="menu_comission_report" name="Comission Report" parent="account.menu_finance_generic_reporting" sequence="2"/>
+    </data>
+</openerp>

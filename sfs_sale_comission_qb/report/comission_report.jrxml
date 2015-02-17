@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="comission_report" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="3.1384283767210097"/>
+	<property name="ireport.x" value="20"/>
+	<property name="ireport.y" value="390"/>
+	<parameter name="journal_ids" class="java.lang.String">
+		<parameterDescription><![CDATA[journal_ids]]></parameterDescription>
+		<defaultValueExpression><![CDATA["(1,2,3)"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="period_ids" class="java.util.Collection">
+		<parameterDescription><![CDATA[period_ids]]></parameterDescription>
+		<defaultValueExpression><![CDATA["(1,2,3)"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="start_period" class="java.lang.String">
+		<parameterDescription><![CDATA[start_period]]></parameterDescription>
+	</parameter>
+	<parameter name="end_period" class="java.lang.String">
+		<parameterDescription><![CDATA[end_period]]></parameterDescription>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+	inv.number,
+	inv.date_invoice,
+	case
+		when inv.type = 'out_invoice' then inv.amount_untaxed
+		when inv.type = 'out_refund' then inv.amount_untaxed * -1
+	end as amount_untaxed,
+	inv.amount_comission,
+	ru.name as salesman,
+	rp.name as partner
+FROM
+	account_invoice inv
+LEFT JOIN
+	res_users ru on ru.id = inv.user_id
+LEFT JOIN
+	res_partner rp on rp.id = inv.partner_id
+WHERE
+	inv.journal_id in $P!{journal_ids} and inv.type in ('out_invoice', 'out_refund') and inv.state not in ('draft', 'cancel') and inv.period_id in $P!{period_ids}
+ORDER BY
+	inv.user_id, inv.partner_id]]>
+	</queryString>
+	<field name="number" class="java.lang.String"/>
+	<field name="date_invoice" class="java.sql.Timestamp"/>
+	<field name="amount_untaxed" class="java.math.BigDecimal"/>
+	<field name="amount_comission" class="java.math.BigDecimal"/>
+	<field name="salesman" class="java.lang.String"/>
+	<field name="partner" class="java.lang.String"/>
+	<variable name="customer_amount_total" class="java.math.BigDecimal" resetType="Group" resetGroup="Partner Group" calculation="Sum">
+		<variableExpression><![CDATA[$F{amount_untaxed}]]></variableExpression>
+	</variable>
+	<variable name="customer_comission_total" class="java.math.BigDecimal" resetType="Group" resetGroup="Partner Group" calculation="Sum">
+		<variableExpression><![CDATA[$F{amount_comission}]]></variableExpression>
+	</variable>
+	<variable name="salesman_amount_total" class="java.math.BigDecimal" resetType="Group" resetGroup="Salesman Group" calculation="Sum">
+		<variableExpression><![CDATA[$F{amount_untaxed}]]></variableExpression>
+	</variable>
+	<variable name="salesman_comission_total" class="java.math.BigDecimal" resetType="Group" resetGroup="Salesman Group" calculation="Sum">
+		<variableExpression><![CDATA[$F{amount_comission}]]></variableExpression>
+	</variable>
+	<variable name="total" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{amount_untaxed}]]></variableExpression>
+	</variable>
+	<variable name="total_comission" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{amount_comission}]]></variableExpression>
+	</variable>
+	<group name="Salesman Group">
+		<groupExpression><![CDATA[$F{salesman}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="555" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{salesman}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<staticText>
+					<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="326" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Salesman Total]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" x="326" y="0" width="116" height="20"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{salesman_amount_total}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" x="442" y="0" width="113" height="20"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{salesman_comission_total}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="Partner Group">
+		<groupExpression><![CDATA[$F{partner}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" x="51" y="0" width="504" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{partner}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="51" height="20"/>
+					<textElement/>
+					<text><![CDATA[]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" x="326" y="0" width="116" height="20"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{customer_amount_total}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" x="442" y="0" width="113" height="20"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{customer_comission_total}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement stretchType="RelativeToTallestObject" x="51" y="0" width="275" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Customer Total]]></text>
+				</staticText>
+				<staticText>
+					<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="51" height="20"/>
+					<textElement/>
+					<text><![CDATA[]]></text>
+				</staticText>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="57">
+			<textField>
+				<reportElement x="0" y="0" width="555" height="37"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Reporte de comisiones, Start Period (" + $P{start_period} + "), End Period (" + $P{end_period} + ")"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="37" width="555" height="20"/>
+				<textElement/>
+				<text><![CDATA[]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="100" y="0" width="111" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Invoice Number]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="211" y="0" width="115" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Invoice Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="326" y="0" width="116" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Amount Untaxed]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="442" y="0" width="113" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Comission Amount]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="100" y="0" width="111" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{number}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy HH.mm.ss" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="211" y="0" width="115" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{date_invoice}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="326" y="0" width="116" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{amount_untaxed}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="442" y="0" width="113" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{amount_comission}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<summary>
+		<band height="20">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="326" y="0" width="116" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{total}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="442" y="0" width="113" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{total_comission}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="326" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

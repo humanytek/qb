@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    
+        <report id="l10n_mx_facturae.account_invoice_facturae_pdf"
+            name="account.invoice.facturae.pdf.inherit"
+            string="Factura Electronica PDF"
+            model="account.invoice"
+            header="False"
+            rml="sfs_l10mx_facturae_report_customization/report/invoice_facturae_pdf.rml"
+            attachment_use="1"
+            attachment="(object.state in ('open','paid')) and (object.cadena_original) and (object.fname_invoice and (object.fname_invoice + ''))"
+            groups="l10n_mx_facturae.group_facturae_mx_cfd_user"
+        />
+        
+    </data>
+</openerp>

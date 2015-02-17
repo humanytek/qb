@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <record id="sfs_view_invoice_form_view_inherit" model="ir.ui.view">
+            <field name="name">sfs.invoice.form.view.inherit</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='amount_total']" position="after">
+                    <field name="amount_comission" readonly="1" invisible="1"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>

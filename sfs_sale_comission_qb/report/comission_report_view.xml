@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <report string="Comission Report"
+            model="account.invoice"
+            auto="True"
+            name="invoice.comission.report"
+            rml="sfs_sale_comission_qb/report/comission_report.jrxml"
+            id="report_invoice_comission"
+            menu="False"
+            />
+        
+        <report string="Comission Report"
+            model="account.invoice"
+            auto="True"
+            name="invoice.comission.report.with.cur"
+            rml="sfs_sale_comission_qb/report/comission_report_with_cur.jrxml"
+            id="report_invoice_comission_with_cur"
+            menu="False"
+            />
+    </data>
+</openerp>

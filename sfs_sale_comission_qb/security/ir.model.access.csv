@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_comission_analysis_report,comission.analysi.report.manger,model_comission_analysis_report,account.group_account_manager,1,1,1,1
+access_comission_analysis_wizard,comission.analysi.rizardepowrt.amanger,model_comission_analysis_wizard,account.group_account_manager,1,1,1,1
